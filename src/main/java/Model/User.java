@@ -1,22 +1,44 @@
 package Model;
 
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.util.*;
 
+@Data
+@Entity
+@NoArgsConstructor
+@Table (name = "Users")
 public class User {
+
+    @Id
+    @GeneratedValue (strategy = GenerationType.AUTO)
+    private String id;
+
+    @Column (name = "Username")
     private String username;
 
+    @Column (name = "Username")
     private String firstName;
 
+    @Column (name = "Last Name")
     private String lastName;
 
+    @Column (name = "Email")
     private String email;
 
+    @Column (name = "Password")
     private String password;
 
+    @OneToMany
     private List<User> followers;
 
+    @OneToMany
     private List<User> following;
 
+    @OneToMany
     private List<Post> posts;
 
     public User(String username, String firstName, String lastName, String email, String password) {
@@ -27,67 +49,4 @@ public class User {
         this.password = password;
     }
 
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public List<User> getFollowers() { return followers; }
-
-    public void setFollowers( List<User> followers ) {this.followers = followers; }
-
-    public List<User> getFollowing() { return following; }
-
-    public void setFollowing( List<User> following ) {this.following = following; }
-
-    public List<Post> getPosts() { return posts; }
-
-    public void setPosts( List<Post> posts ) {this.posts = posts; }
-
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + username +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", email='" + email + '\'' +
-                ", password='" + password + '\'' +
-                '}';
-    }
 }
