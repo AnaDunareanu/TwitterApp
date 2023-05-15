@@ -30,8 +30,11 @@ public class Post {
     @Column (name = "PostDate")
     private LocalDateTime date;
 
-    @OneToMany (mappedBy = "post")
+    @OneToMany (mappedBy = "post", cascade = CascadeType.ALL)
     private List<React> react;
+
+    @OneToMany (mappedBy = "post", cascade = CascadeType.ALL)
+    private List<Reply> replies;
 
     @Column (name = "PostTitle")
     private String title;

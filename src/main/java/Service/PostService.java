@@ -6,9 +6,11 @@ import Exceptions.PostNotFound;
 import Exceptions.UserNotFound;
 import Model.Post;
 import Model.React;
+import Model.Reply;
 import Model.User;
 import Repository.PostRepo;
 import Repository.ReactRepo;
+import Repository.ReplyRepo;
 import Repository.UserRepo;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -29,6 +31,7 @@ public class PostService implements PostServiceInterface{
     private final ModelMapper modelMapper;
     private final UserRepo userRepository;
     private final ReactRepo reactRepository;
+    private final ReplyRepo replyRepository;
 
     @Override
     public void addPost(PostDTO postDTO)
@@ -98,5 +101,17 @@ public class PostService implements PostServiceInterface{
         react.setUserOwner(user);
         react.setPost(post);
         reactRepository.save(react);
+    }
+
+    @Override
+    public void addReplyToPost(String postId, String userId, String message)
+    {
+        Post post = postRepository.findById(postId).orElseThrow(() -> new PostNotFound("Post not found"));
+        User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFound("User not found"));
+        Reply reply = new Reply();
+        reply.setMessage(message);
+        reply.setPost(post);
+        reply.setUser(user);
+        replyRepository.save(reply);
     }
 }

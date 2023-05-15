@@ -1,6 +1,7 @@
 package Controllers;
 
 import DTO.PostDTO;
+import DTO.ReplyDTO;
 import DTO.UserDTO;
 import Service.PostService;
 import Service.UserService;
@@ -67,4 +68,10 @@ public class UserController {
         return "You reacted to this post";
     }
 
+    @PostMapping (value = "/addReply/{postId}/{userid}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public String addReplyToPost(@PathVariable String postId, @RequestBody ReplyDTO replyDTO)
+    {
+        postService.addReplyToPost(postId, replyDTO.getUserId(), replyDTO.getMessage());
+        return "You replied to this post";
+    }
 }
