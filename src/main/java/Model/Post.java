@@ -1,45 +1,41 @@
 package Model;
 
-import java.time.LocalDate;
-import java.util.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.*;
+import jakarta.persistence.*;
+
+
+@Data
+@Entity
+@AllArgsConstructor
+@NoArgsConstructor
+@Table(name = "Posts")
 public class Post {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private String id;
+
+    @ManyToOne
     private User userOwner;
-    private LocalDate date;
+
+    @Column (name = "PostDate")
+    private LocalDateTime date;
+
+    @OneToMany (mappedBy = "post")
     private List<React> react;
+
+    @Column (name = "PostTitle")
+    private String title;
+
+    @Column (name = "PostContent")
     private String postInfo;
-
-    public Post (String id, User userOwner, LocalDate date, List<React> react, String postInfo)
-    {
-        this.id = id;
-        this.userOwner = userOwner;
-        this.date = date;
-        this.react = react;
-        this.postInfo = postInfo;
-    }
-
-    public String getUserOwnerId() {return id; }
-
-    public void setUserOwnerId(String id) { this.id = id; }
-
-    public LocalDate getDate() {return date; }
-
-    public void setLocalDate(LocalDate date) { this.date = date; }
-
-    public User getUserOwner() {return userOwner; }
-
-    public void setUserOwner(User userOwner) { this.userOwner = userOwner; }
-
-    public List<React> getReactions() {return  react; }
-
-    public void setReaction(List<React> react) { this.react = react; }
-
-    public String getPostInfo() {return postInfo; }
-
-    public void setPostInfo(String id) { this.postInfo = postInfo; }
-
-
 
 }

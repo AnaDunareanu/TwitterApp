@@ -1,10 +1,12 @@
 package Controllers;
 
+import DTO.PostDTO;
 import DTO.UserDTO;
-import Model.User;
+import Service.PostService;
 import Service.UserService;
 import Service.UserServiceInterface;
 import lombok.AllArgsConstructor;
+import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +20,7 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+    private PostService postService;
 
     @PostMapping(value = "/users", consumes = MediaType.APPLICATION_JSON_VALUE)
     public UserDTO registerUser(@RequestBody UserDTO user)
@@ -37,6 +40,26 @@ public class UserController {
         String followedUser = userDTO.getUsername();
         userService.follow(id, followedUser);
     }
+
+    @PostMapping (value = "/addPost", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public String addPost(@RequestBody PostDTO postDTO)
+    {
+        postService.addPost(postDTO);
+        return "Post added successfully!";
+    }
+
+    @GetMapping (value = "/getOwnPosts/{userId}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public List<PostDTO> getOwnPosts (@PathVariable String userId)
+    {
+        return postService.getOwnPosts(userId);
+    }
+
+    @GetMapping (value = "/getFeed/{userId}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public List<PostDTO> getFeed (@PathVariable String userId)
+    {
+        return postService.getFeed(userId);
+    }
+
 
 
 }

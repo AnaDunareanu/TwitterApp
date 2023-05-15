@@ -15,10 +15,6 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class UserService implements UserServiceInterface {
 
-   /* public List<User> usersList = Arrays.asList(
-            new User("marinastamos21","Marina", "Stamos", "stamarina21","maripossa21"),
-            new User("Jose_Siccolo17", "Jose", "Siccolo", "josesicco17", "signorina_2705"));*/
-
     private final UserRepo userRepository;
     private final ModelMapper modelMapper;
 

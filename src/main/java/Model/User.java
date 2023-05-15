@@ -38,7 +38,7 @@ public class User {
     @OneToMany
     private List<User> following;
 
-    @OneToMany
+    @OneToMany (mappedBy = "userOwner", cascade = CascadeType.ALL)
     private List<Post> posts;
 
     public User(String username, String firstName, String lastName, String email, String password) {
@@ -48,5 +48,4 @@ public class User {
         this.email = email;
         this.password = password;
     }
-
 }
