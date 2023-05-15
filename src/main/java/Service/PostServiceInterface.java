@@ -9,4 +9,5 @@ public interface PostServiceInterface {
     void addPost(PostDTO postDTO);
     List<PostDTO> getOwnPosts (String userdId);
     List<PostDTO> getFeed (String userId);
+    void addReactToPost (String postId, String userId);
 }

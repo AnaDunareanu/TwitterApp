@@ -60,6 +60,11 @@ public class UserController {
         return postService.getFeed(userId);
     }
 
-
+    @PostMapping (value = "/addReact/{postId}/{userid}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public String addReactToPost(@PathVariable String postId, @PathVariable String userid)
+    {
+        postService.addReactToPost(postId, userid);
+        return "You reacted to this post";
+    }
 
 }

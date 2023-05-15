@@ -2,10 +2,13 @@ package Service;
 
 import DTO.PostDTO;
 import DTO.UserDTO;
+import Exceptions.PostNotFound;
 import Exceptions.UserNotFound;
 import Model.Post;
+import Model.React;
 import Model.User;
 import Repository.PostRepo;
+import Repository.ReactRepo;
 import Repository.UserRepo;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -13,6 +16,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,8 +27,8 @@ public class PostService implements PostServiceInterface{
 
     private final PostRepo postRepository;
     private final ModelMapper modelMapper;
-    private final UserService userService;
     private final UserRepo userRepository;
+    private final ReactRepo reactRepository;
 
     @Override
     public void addPost(PostDTO postDTO)
@@ -35,12 +39,27 @@ public class PostService implements PostServiceInterface{
     }
 
     @Override
-    public List<PostDTO> getOwnPosts(String userID)
+    public List<PostDTO> getOwnPosts(String userId)
     {
-        List<Post> currentUserPosts = postRepository.findByUserId(userID);
-        return  currentUserPosts.stream()
-                .map(p -> modelMapper.map(p, PostDTO.class))
-                .collect(Collectors.toList());
+        User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFound("User not found"));
+        List<Post> posts = user.getPosts();
+
+        List<PostDTO> postDTOs = new ArrayList<>();
+
+        for (Post post : posts) {
+            List<React> reacts = reactRepository.findByPost(post);
+
+            List<UserDTO> reactUsers = reacts.stream()
+                    .map(r -> modelMapper.map(r.getUserOwner(), UserDTO.class))
+                    .collect(Collectors.toList());
+
+            PostDTO postDTO = modelMapper.map(post, PostDTO.class);
+            postDTO.setUserReacts(reactUsers);
+
+            postDTOs.add(postDTO);
+        }
+
+        return postDTOs;
     }
 
     @Override
@@ -48,16 +67,36 @@ public class PostService implements PostServiceInterface{
     {
         User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFound("User not found"));
         List<User> followedUsers = user.getFollowing();
-        List <Post> followedPosts = followedUsers.stream()
-                .flatMap(p -> p.getPosts().stream())
-                .sorted(Comparator.comparing(Post::getDate).reversed())
-                .collect(Collectors.toList());
-        return followedPosts.stream()
-                .map(p -> modelMapper.map(p,PostDTO.class))
-                .collect(Collectors.toList());
+
+        List<PostDTO> feedPosts = new ArrayList<>();
+
+        for (User fUser : followedUsers) {
+            List<Post> userPosts = fUser.getPosts();
+
+            for (Post post : userPosts) {
+                List<React> reacts = reactRepository.findByPost(post);
+
+                List<UserDTO> reactUsers = reacts.stream()
+                        .map(r -> modelMapper.map(r.getUserOwner(), UserDTO.class))
+                        .collect(Collectors.toList());
+
+                PostDTO postDTO = modelMapper.map(post, PostDTO.class);
+                postDTO.setUserReacts(reactUsers);
+                feedPosts.add(postDTO);
+            }
+        }
+
+        return feedPosts;
     }
 
-
-
-
+    @Override
+    public void addReactToPost(String postId, String userId)
+    {
+        Post post = postRepository.findById(postId).orElseThrow(() -> new PostNotFound("Post not found"));
+        User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFound("User not found"));
+        React react = new React();
+        react.setUserOwner(user);
+        react.setPost(post);
+        reactRepository.save(react);
+    }
 }

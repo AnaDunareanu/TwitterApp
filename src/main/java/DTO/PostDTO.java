@@ -16,6 +16,7 @@ public class PostDTO {
     private User userOwner;
     private LocalDate date;
     private List<React> react;
+    private List<UserDTO> userReacts;
     private String title;
     private String postInfo;
 }
