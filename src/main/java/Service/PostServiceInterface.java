@@ -1,0 +1,14 @@
+package Service;
+
+import DTO.PostDTO;
+import DTO.UserDTO;
+
+import java.util.List;
+
+public interface PostServiceInterface {
+    void addPost(PostDTO postDTO);
+    List<PostDTO> getOwnPosts (String userdId);
+    List<PostDTO> getFeed (String userId);
+    void addReactToPost (String postId, String userId);
+    void addReplyToPost (String postId, String userId, String message);
+}
